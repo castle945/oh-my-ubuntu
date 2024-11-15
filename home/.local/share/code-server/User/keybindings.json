@@ -1,0 +1,63 @@
+// Place your key bindings in this file to override the defaults
+[
+    {
+        "key": "alt+`",
+        "command": "workbench.action.quickOpen"
+    },
+    {
+        "key": "alt+1",
+        "command": "workbench.action.findInFiles"
+    },
+    {
+        "key": "alt+2",
+        "command": "git.stageSelectedRanges",
+        "when": "isInDiffEditor && !operationInProgress"
+    },
+    {
+        "key": "alt+3",
+        "command": "workbench.action.toggleMaximizedPanel"
+    },
+    {
+        "key": "alt+z",
+        "command": "editor.toggleFold",
+        "when": "editorTextFocus && foldingEnabled"
+    },
+    {
+        "key": "alt+x",
+        "command": "editor.action.nextSelectionMatchFindAction",
+        "when": "editorFocus"
+    },
+    {
+        "key": "shift+alt+z",
+        "command": "editor.foldAllExcept",
+        "when": "editorTextFocus && foldingEnabled"
+    },
+    {
+        "key": "shift+alt+x",
+        "command": "editor.unfoldAll",
+        "when": "editorTextFocus && foldingEnabled"
+    },
+    {
+        "key": "shift+alt+a",
+        "command": "workbench.action.focusLeftGroup"
+    },
+    {
+        "key": "shift+alt+d",
+        "command": "workbench.action.focusRightGroup"
+    },
+    {
+        "key": "ctrl+a",
+        "command": "editor.action.selectAll"
+    },
+    {
+        "key": "ctrl+cmd+`",
+        "command": "runCommands",
+        "args": {
+            "commands":[
+                "workbench.action.toggleSidebarVisibility",
+                "workbench.action.toggleSidebarVisibility",
+                "workbench.action.terminal.toggleTerminal",
+            ]
+        },
+    },
+]

@@ -1,0 +1,28 @@
+version: '3'
+services:
+  service_name:
+    image: ${image_name}
+    container_name: ${container_name}
+    volumes: 
+      # - /etc/localtime:/etc/localtime:ro 
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /home:/home
+      - /datasets:/datasets
+    stdin_open: true
+    tty: true
+    environment: 
+      - DISPLAY=unix$DISPLAY
+      - GDK_SCALE
+      - GDK_DPI_SCALE
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility,graphics
+    ipc: host
+    network_mode: host
+    command: bash -c "/usr/sbin/sshd -D" #! 宿主机修改端口
+    privileged: true
+    runtime: nvidia
+
+
+# export image_name="city945/docker:cuda11.8.0-cudnn8-devel-ubuntu22.04" && export container_name="vm_ubuntu22.04-cuda11.8" && \ 
+# cp docker-compose.yml bak && sed -i "s/service_name/${container_name}/g" docker-compose.yml && \
+# docker-compose up -d && mv bak docker-compose.yml

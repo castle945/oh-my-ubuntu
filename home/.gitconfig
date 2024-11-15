@@ -1,0 +1,7 @@
+[user]
+	name = city945
+	email = 2654229893@qq.com
+[init]
+	defaultBranch = city945
+[safe]
+    directory = *

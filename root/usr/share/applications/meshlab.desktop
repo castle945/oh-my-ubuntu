@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=MeshLab
+Exec=/home/city945/software/App/MeshLab.AppImage
+Icon=/home/city945/software/App/meshlab.png
+Type=Application
+Terminal=false

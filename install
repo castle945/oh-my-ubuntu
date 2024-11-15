@@ -1,0 +1,68 @@
+#!/bin/bash 
+#
+# shell 环境配置
+
+set -u # 设置忽略不存在的变量
+install_flag=0
+platform_flag=0
+
+help() {
+  cat << EOF
+usage: $0 [OPTIONS]
+    --help               Show this message
+    --full               full install, eg: vim
+    --arm                mac
+EOF
+}
+
+for opt in "$@"; do
+  case $opt in
+    --help)
+      help
+      exit 0
+      ;;
+    --full)    install_flag=1    ;;
+    --arm)     platform_flag=1   ;;
+    *)
+      echo "unknown option: $opt"
+      help
+      exit 1
+      ;;
+  esac
+done
+
+function config()
+{
+    cur_dir=$(dirname $(readlink -f $0))
+    cd $cur_dir/home
+    cp -r $(ls -A) $HOME
+}
+if [ ${platform_flag} -eq 1 ]; then
+    config    
+    [ ! -d ${HOME}/.fzf ] && git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install #@
+    exit 0
+fi
+
+# 左边执行失败则执行右边，否则停止
+[[ -x "$(command -v sudo)" ]] || { apt update ; apt install -y sudo; } || { echo "sudo should be installed first! exit." ; exit -1; }
+[ ! -f /etc/localtime ] && sudo ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo Asia/Shanghai > /etc/timezone
+
+sudo apt install -y git tmux unzip wget vim zsh nfs-common
+sudo apt install -y language-pack-zh-hans
+sudo apt install -y python3-distutils libgl1-mesa-glx libsm6 libglib2.0-dev
+sudo sed -i 's/required/sufficient/' /etc/pam.d/chsh && chsh -s /bin/zsh
+
+if [ ${install_flag} -eq 1 ]; then
+  sudo apt install -y net-tools iputils-ping
+  sudo apt install -y tree pkg-config openssh-server mlocate rsync htop
+fi
+
+config
+
+cd ;
+rm -rf .oh-my-zsh && unzip .oh-my-zsh.zip && rm .oh-my-zsh.zip;
+rm -rf .fzf && unzip .fzf.zip && rm .fzf.zip && mv .fzf/.fzf.*sh ./
+
+# apt install -y git curl zsh
+# sh -c "$(curl -fsSL https://ghproxy.com/https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+# git clone --depth 1 https://ghproxy.com/https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install #@

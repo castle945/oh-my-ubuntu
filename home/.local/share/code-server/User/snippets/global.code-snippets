@@ -1,0 +1,168 @@
+{
+///////////////////////////////////////////////////////////////////////////////
+//
+// xc 代码规范
+//
+///////////////////////////////////////////////////////////////////////////////
+"xc-python-func": {
+	"prefix": "google-python-func",
+	"body": [
+"\"\"\"",
+"${1:summary}",
+"Args:",
+"\t${2:args}",
+"",
+"Returns:",
+"\t${3:returns}",
+"\"\"\"",
+	],
+},
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Google 开源代码规范 
+// https://zh-google-styleguide.readthedocs.io/en/latest/google-shell-styleguide/shell_files_and_interpreter_invocation/
+//
+///////////////////////////////////////////////////////////////////////////////
+"todo": {
+	"prefix": "todo",
+	"body": [
+"TODO(city945): "
+	],
+},
+
+"google-shell-filehead": {
+	"prefix": "google-shell-filehead",
+	"body": [
+"#!/bin/bash",
+"#",
+"# ${1:comments}",
+	],
+},
+"google-shell-func": {
+	"prefix": "google-shell-func",
+	"body": [
+"###############################################################################",
+"# ${1:comments}",
+"# Globals:",
+"#   ${2:export_var}",
+"# Arguments:",
+"#   None",
+"# Returns:",
+"#   None",
+"###############################################################################",
+],
+},
+
+"google-python-filehead": {
+	"prefix": "google-python-filehead",
+	// __doc__
+	"body": [
+"\"\"\"${1:summary}",
+"",
+"${2:comments}",
+"",
+"Typical usage example:",
+"",
+"foo = ClassFoo()",
+"bar = foo.FunctionBar()",
+"\"\"\"",
+	],
+},
+"google-python-func-full": {
+	"prefix": "google-python-func-full",
+	"body": [
+"\"\"\"",
+"# @# ${1:summary}",
+"Args:",
+"\t${2:args}",
+"Cfgs:",
+"\t${3:cfgs}",
+"Returns:",
+"\t${4:returns}",
+"Structs:",
+"\t${5:struct}",
+"Raises:",
+"\tIOError: An error occurred accessing the smalltable.",
+"\"\"\"",
+	],
+},
+"google-python-func": {
+	"prefix": "google-python-func",
+	"body": [
+"\"\"\"",
+"# @# ${1:summary}",
+"Args:",
+"\t${2:args}",
+"",
+"Returns:",
+"\t${3:returns}",
+"Structs:",
+"\t${4:struct}",
+"\"\"\"",
+	],
+},
+"google-python-class": {
+	"prefix": "google-python-class",
+	"body": [
+"\"\"\"Summary of class here.",
+"",
+"Longer class information....",
+"",
+"Attributes:",
+"\tlikes_spam: A boolean indicating if we like SPAM or not.",
+"\teggs: An integer count of the eggs we have laid.",
+"\"\"\"",
+	],
+},
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  实用代码片段
+//
+///////////////////////////////////////////////////////////////////////////////
+	"snippet": {
+		"prefix": "snippet",
+		"body": [
+"\"${1:label}\": {",
+"\t\"prefix\": \"${1:label}\",",
+"\t\"body\": [",
+"$0",
+"\t],",
+"},"
+		],
+	},
+	"box#": {
+		"prefix": "xc-box",
+		"body": [
+"###############################################################################",
+"#",
+"#",
+"#",
+"###############################################################################",
+		],
+	},
+	"box//": {
+		"prefix": "xc-box",
+		"body": [
+"///////////////////////////////////////////////////////////////////////////////",
+"//",
+"//",
+"//",
+"///////////////////////////////////////////////////////////////////////////////",
+		],
+	},
+	"launch-python": {
+		"prefix": "launch-python",
+		"body": [
+	"\t\t\"cwd\": \"${fileDirname}\",",
+	"\t\t\"args\": [",
+	"\t\t\t\"--cfg_file\", \"cfgs/kitti_models/second.yaml\",",
+	"\t\t]",
+		],
+	},	
+}

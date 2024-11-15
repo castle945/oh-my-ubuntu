@@ -1,0 +1,105 @@
+{
+///////////////////////////////////////////////////////////////////////////////
+//
+//  自定义设置
+//
+///////////////////////////////////////////////////////////////////////////////
+    // 语法分析排除目录 https://learnscript.net/zh/python/development-tools/vscode/pylance/
+    "python.analysis.exclude":[
+        "data/", "output/", "work_dirs/", "build/", "devel/", "**/__pycache__",
+    ],
+    "better-comments.highlightPlainText": true,
+    "better-comments.tags": [
+        {
+            "tag": "@#",                         // @# 代码逻辑段落 ## ###
+            "color": "#eedeb0",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": true,
+            "italic": false
+        },
+        {
+            "tag": "@:",                         // @: 重要数据结构定义，格式 var:desc
+            "color": "#edd1d8",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": true,
+            "italic": false
+        },
+        {
+            "tag": "@%",                         // @% 简单强调
+            "color": "#FF8C00",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": true,
+            "italic": false
+        },
+        {
+            "tag": "@!",                         // @! 重点强调
+            "color": "#ed5a65",                  // #edd1d8
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": true,
+            "italic": false
+        },
+        {
+            "tag": "@?",                         // @? 疑惑不解
+            "color": "#fff143",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": true,
+            "italic": false
+        },
+        {
+            "tag": "@tag",                       // @tag 扩展标签说明，此标签也可以用作笔记的链接关键字
+            "color": "#8080c0",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": true,
+            "italic": false
+        },
+        // {
+        //     "tag": "@@",                         // @@ 文档笔记
+        //     "color": "#3ad7fe",
+        //     "strikethrough": false,
+        //     "underline": false,
+        //     "backgroundColor": "transparent",
+        //     "bold": true,
+        //     "italic": false
+        // },
+        // {
+        //     "tag": "@$",                         // @$ 代码片段
+        //     "color": "#d9b611",
+        //     "strikethrough": false,
+        //     "underline": false,
+        //     "backgroundColor": "transparent",
+        //     "bold": true,
+        //     "italic": false
+        // },
+        // {
+        //     "tag": "@todo",                      // @todo
+        //     "color": "#e3f9fd",
+        //     "strikethrough": false,
+        //     "underline": false,
+        //     "backgroundColor": "transparent",
+        //     "bold": true,
+        //     "italic": false
+        // },
+
+        // {
+        //     "tag": "@/",                         // @/ 不太重要 例如某段代码认为看似可删除
+        //     "color": "#474747",
+        //     "strikethrough": false,
+        //     "underline": false,
+        //     "backgroundColor": "transparent",
+        //     "bold": true,
+        //     "italic": false
+        // },
+    ],
+}

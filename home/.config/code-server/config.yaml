@@ -1,0 +1,4 @@
+bind-addr: 0.0.0.0:9117
+auth: password
+password: 1qaz@WSX
+cert: false

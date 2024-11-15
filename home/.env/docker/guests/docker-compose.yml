@@ -1,0 +1,38 @@
+version: '3'
+services:
+  service_name:
+    image: ${image_name}
+    container_name: ${container_name}
+    volumes: 
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /home/guests/cyt:/root #! 这里的路径看需要改一下，你可能用不着3个共享目录 source:target
+      - /datasets:/datasets
+    # user: root
+    working_dir: /root
+    stdin_open: true
+    tty: true
+    environment: 
+      - DISPLAY=unix$DISPLAY
+      - GDK_SCALE
+      - GDK_DPI_SCALE
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility,graphics
+    ipc: host
+    network_mode: host  # 需要在容器内使用网卡时开启此选项
+    # ports:
+    #   - "10001:22"
+    # 开启 ssh 连接，确保容器内已 apt install openssh-server
+    command: bash -c "apt update ; apt install -y openssh-server ; echo 'root:123456' | chpasswd ; mkdir -p /var/run/sshd && echo 'Port 30570' >> /etc/ssh/sshd_config && echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config && /usr/sbin/sshd -D" #! 修改端口
+    # privileged: true
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu,compute,utility,graphics]
+              device_ids: ["4", "5"]
+
+# ! 注意，要使GUI生效，必须在本地终端下启动容器，即xhost是有效的而不是 xhost:  unable to open display ""
+# export image_name="pytorch/pytorch:1.9.1-cuda11.1-cudnn8-devel" && export container_name="dl_city945" && \
+# cp docker-compose.yml bak && sed -i "s/service_name/${container_name}/g" docker-compose.yml && \
+# docker-compose up -d && mv bak docker-compose.yml 
