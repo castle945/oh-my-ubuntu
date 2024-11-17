@@ -2,67 +2,100 @@
 #
 # shell 环境配置
 
-set -u # 设置忽略不存在的变量
-install_flag=0
-platform_flag=0
-
-help() {
-  cat << EOF
-usage: $0 [OPTIONS]
-    --help               Show this message
-    --full               full install, eg: vim
-    --arm                mac
-EOF
+NC='\033[0m'        # 颜色代码，默认白色
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+function info {
+    echo -e "${GREEN}$1${NC}"
+}
+function error {
+    echo -e "${RED}Error: $1${NC}" >&2 # 将错误信息输出到标准错误
+    exit 1
+}
+function echorun {
+    echo "$@" && "$@"
+}
+function ask {
+  while true; do
+    read -p "$1 ([y]/n) " -r
+    REPLY=${REPLY:-"y"}
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+      return 1
+    elif [[ $REPLY =~ ^[Nn]$ ]]; then
+      return 0
+    fi
+  done
 }
 
-for opt in "$@"; do
-  case $opt in
-    --help)
-      help
-      exit 0
-      ;;
-    --full)    install_flag=1    ;;
-    --arm)     platform_flag=1   ;;
-    *)
-      echo "unknown option: $opt"
-      help
-      exit 1
-      ;;
-  esac
-done
 
-function config()
-{
-    cur_dir=$(dirname $(readlink -f $0))
-    cd $cur_dir/home
-    cp -r $(ls -A) $HOME
+function apt_install {
+    [[ -x "$(command -v sudo)" ]] || { apt update ; apt install -y sudo; } || error "sudo should be installed first! exit." # 左边执行失败则执行右边，否则停止
+    [ ! -f /etc/localtime ] && sudo ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo Asia/Shanghai > /etc/timezone
+    sudo apt install -y git tmux unzip wget vim zsh nfs-common 
+    sudo apt install -y language-pack-zh-hans
+    sudo apt install -y python3-distutils libgl1-mesa-glx libsm6 libglib2.0-dev
 }
-if [ ${platform_flag} -eq 1 ]; then
-    config    
-    [ ! -d ${HOME}/.fzf ] && git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install #@
-    exit 0
+function copy_config {
+    echorun cd $(dirname $(readlink -f ${BASH_SOURCE[0]}))/home
+    echorun cp -rp $(ls -A) $HOME
+    cd
+    cat .zsh_history.md >> .zsh_history
+    echorun chsh -s /bin/zsh    # 安装 ohmyzsh, 见其文档手动安装步骤
+    echorun .fzf/install --all  # 安装 fzf, --all 避免交互
+}
+function update {
+    # 创建新老配置文件的对比工作区
+    diff_dir=$(pwd)/oh-my-ubuntu
+    mkdir -p $diff_dir/{a_old,b_new}
+    cd $(dirname $(readlink -f ${BASH_SOURCE[0]}))/home
+    find . -path './.oh-my-zsh' -prune -o -path './.fzf' -prune -o -type f -print | while IFS= read -r file; do
+        dir=$(dirname $file)
+        mkdir -p $diff_dir/b_new/$dir
+        echorun cp -rp $file $diff_dir/b_new/$dir
+        if [ -e $HOME/$file ]; then
+            mkdir -p $diff_dir/a_old/$dir
+            echorun cp -rp $HOME/$file $diff_dir/a_old/$dir
+        fi
+    done
+    info "A compare workspace has been created in $diff_dir, and you can now use the vscode extension 'compare folders' to make a decision"
+    # 执行配置文件拷贝
+    local choice=$1 # choice= 不赋值则为空
+    if [ -z "$choice" ]; then # 如果 choice 为空
+        ask "cp -rp $diff_dir/b_new/{.*,*} $HOME?"
+        choice=$?
+    fi
+    if [[ $choice -eq 1 ]]; then
+        echorun cp -rp $diff_dir/b_new/{.*,*} $HOME
+    else
+        error "abort update files!"
+    fi
+}
+
+# 命令行参数解析
+if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+    printf "Usage:\n\t$0\t\t# for install \n\t$0 update [1]\t# for update, input update 1 for direct copy\n"
+    exit 1
+fi
+# 如果是更新配置文件
+if [ $# -gt 0 ]; then
+    cmd=$1
+    shift
+    if [ "$cmd" == "update" ]; then
+        update $*
+        exit 0
+    else
+        error "Unknown command: '$cmd'. Expected 'update'."
+    fi
 fi
 
-# 左边执行失败则执行右边，否则停止
-[[ -x "$(command -v sudo)" ]] || { apt update ; apt install -y sudo; } || { echo "sudo should be installed first! exit." ; exit -1; }
-[ ! -f /etc/localtime ] && sudo ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo Asia/Shanghai > /etc/timezone
-
-sudo apt install -y git tmux unzip wget vim zsh nfs-common
-sudo apt install -y language-pack-zh-hans
-sudo apt install -y python3-distutils libgl1-mesa-glx libsm6 libglib2.0-dev
-sudo sed -i 's/required/sufficient/' /etc/pam.d/chsh && chsh -s /bin/zsh
-
-if [ ${install_flag} -eq 1 ]; then
-  sudo apt install -y net-tools iputils-ping
-  sudo apt install -y tree pkg-config openssh-server mlocate rsync htop
+# 判断操作系统与 CPU 架构执行对应函数
+os_cpu_type=$(uname -sm)
+if !([[ "$os_cpu_type" == "Linux x86_64" ]] || [[ "$os_cpu_type" == "Darwin arm64" ]] || [[ "$os_cpu_type" == "Linux aarch64" ]]); then
+    error "Not supported on $os_cpu_type"
 fi
 
-config
-
-cd ;
-rm -rf .oh-my-zsh && unzip .oh-my-zsh.zip && rm .oh-my-zsh.zip;
-rm -rf .fzf && unzip .fzf.zip && rm .fzf.zip && mv .fzf/.fzf.*sh ./
-
-# apt install -y git curl zsh
-# sh -c "$(curl -fsSL https://ghproxy.com/https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-# git clone --depth 1 https://ghproxy.com/https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install #@
+info "Find Operating System and CPU Architecture: $os_cpu_type"
+if [[ "$(uname -s)" == "Linux" ]]; then
+    apt_install
+fi
+copy_config

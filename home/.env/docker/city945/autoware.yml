@@ -1,0 +1,35 @@
+version: '3'
+services:
+  autoware:
+    image: autoware/autoware:1.14.0-melodic
+    container_name: autoware
+    volumes: 
+      # - /etc/localtime:/etc/localtime:ro            # 不加, 挂载文件进去会导致镜像出问题
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /home/city945/work:/home/autoware/work                 #! 这里的路径看需要改一下，你可能用不着3个共享目录 source:target
+      - /datasets:/datasets
+      # - /home/city945/.zsh_history:/root/.zsh_history
+      # - /home/city945/.local:/home/city945/.local # conda 里写死了安装路径，干脆整个目录挂上来
+    # user: "1000:15214"
+    # working_dir: /home/autoware
+    stdin_open: true
+    tty: true
+    environment: 
+      - DISPLAY=unix$DISPLAY
+      - GDK_SCALE
+      - GDK_DPI_SCALE
+      - NVIDIA_VISIBLE_DEVICES=all  # 显卡
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility,graphics
+    ipc: host
+    network_mode: host  # 需要在容器内使用网卡时开启此选项
+    # ports:
+    #   - "10001:22"
+    # 开启 ssh 连接，确保容器内已 apt install openssh-server
+    # command: bash -c "echo 'Port 10170' >> /etc/ssh/sshd_config && /usr/sbin/sshd -D" #! 修改端口
+    privileged: true    # 使用宿主机外设时开启 或 可以避免一些错误如ros镜像
+    runtime: nvidia
+
+# ! 注意，要使GUI生效，必须在本地终端下启动容器，即xhost是有效的而不是 xhost:  unable to open display ""
+# export image_name="pytorch/pytorch:1.9.1-cuda11.1-cudnn8-devel" && export container_name="dl_city945" && \
+# cp docker-compose.yml bak && sed -i "s/cala/${container_name}/g" docker-compose.yml && \
+# docker-compose up -d && mv bak docker-compose.yml 

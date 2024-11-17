@@ -1,0 +1,30 @@
+#!/bin/bash
+# 
+# shell 工具插件
+
+# 类似 Python 中 fire.Fire() 的用法，可将函数名作为命令行参数，仅支持 bash, zsh 中关联数组的用法有所不同
+function fire {
+    # 命令行参数校验
+    if [ $# -lt 1 ] || [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+        printf "Usage:\n\t$0 func_name [args...]\n"
+        echo "Functions:"
+        printf '\t%s\n' "${!func_dict[@]}"
+        exit 1
+    fi
+    
+    local func_name="$1"    # 获取函数名
+    shift                   # 移除第一个参数，剩下的是传递给函数的参数
+    # 检查是否有对应的函数实现
+    if [[ -z "${func_dict[$func_name]}" ]]; then
+        echo "Unknown func_name: $func_name"
+        echo "Functions:"
+        printf '\t%s\n' "${!func_dict[@]}"
+        exit 1
+    fi
+
+    # 调用函数
+    "${func_dict[$func_name]}" "$@"
+}
+# 函数映射字典，将函数名映射到函数本身
+declare -A func_dict=() # (['func1']='func1' ['func2']='func2')
+fire $*

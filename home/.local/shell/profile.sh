@@ -8,57 +8,76 @@
 #  
 ################################################################################################
 # 原生命令简化
-alias b='cd -'
+alias cp='cp -rp'
 alias rm='rm -i'
 alias mkdir='mkdir -p'
 alias la='ls -A'
 
-# # CUI工具命令简化
+# CUI 工具命令简化
 alias tnew='tmux new -s '
 alias tback='tmux attach -t '
 alias tkill='tmux kill-session -t '
 alias tree='tree -I .git'
-alias num-files="ls -lR | grep '^-' | wc -l" # 当前目录下非隐藏文件个数
+alias zip='zip -ry'
 
 ################################################################################################
 #	
 #  脚本函数
 #  
 ################################################################################################
-# 清除工作空间下的指定名称的目录
-function clean_trash()
-{
-    if [ $# -lt 1 ]; then 
-    echo "usage: clean_trash /list/of/dirs\nexample: clean_trash build"
-    return -1
-    fi
-
-    for trash in $*
-    do 
-    find -name $trash -type d | xargs -I dir sh -c "rm -rf dir;echo dir"
-    done 
+function echorun {
+    echo "$@" && "$@"
 }
-
-# 简单实现类似apt-get快速获取仓库文件的功能 #! 直接alias不能用$*获取命令参数
-function fget() 
-{
-    if [ $# -lt 2 ]; then 
-        echo "usage: fget /search/dir keyword \nexample: fget ~/work install_*"
+function gitcpchanges {
+    if [ $# -ne 1 ] || ! [ -d ".git" ] || [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+        printf "Usage:\n\t$0 dest_dir # 请在 git 仓库根路径下运行\n"
+        printf "Examples:\n\t$0 .trash/temp/\n"
         return -1
     fi
-    search_dir=$1
+    local dest_dir=$1
 
-    find ${search_dir} -maxdepth 6 -iname $2 | fzf | xargs -I file sh -c 'cp -r file ./'
+    mkdir -p $dest_dir
+    git status --porcelain | grep 'M\|??\|A' | awk '{print $2}' | while read filepath; do
+        mkdir -p $dest_dir/$(dirname $filepath)
+        echorun cp -rp $filepath $dest_dir/$(dirname $filepath)
+    done
 }
-function fmv() 
-{
-    if [ $# -lt 2 ]; then 
-        echo "usage: fmv /search/dir keyword \nexample: fget ~/work install_*"
+function gitcpcommits {
+    if [ $# -ne 2 ] || ! [ -d ".git" ] || [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+        printf "Usage:\n\t$0 dest_dir num_commits # 请在 git 仓库根路径下运行，输入目标路径和需要保存的最近提交层数\n"
+        printf "Examples:\n\t$0 .trash/temp/\n"
         return -1
     fi
-    search_dir=$1
+    local dest_dir=$1
+    local num_commits=$2
 
-    find ${search_dir} -maxdepth 6 -iname $2 | fzf | xargs -I file sh -c 'mv file ./'
+    mkdir -p $dest_dir
+    abs_dest_dir=$(realpath $dest_dir)
+    src_dir=$(pwd)
+    tmp_dir=/tmp/$(basename $src_dir)
+    cd /tmp && git clone $src_dir/.git
+    cd $tmp_dir
+    for i in {$num_commits..1}; do
+        git reset HEAD^
+        cur_dest_dir=$abs_dest_dir/$(printf "commit%02d" $i)
+        gitcpstatus $cur_dest_dir
+        git reset --hard HEAD
+        git clean -fd # 清除未跟踪文件
+    done
+    echorun rm -rf $tmp_dir
+    # gather all commits
+    mkdir -p $abs_dest_dir/final
+    echorun cp -rp $abs_dest_dir/commit*/{*,.*} $abs_dest_dir/final
+}
+# 简单实现类似 apt-get 快速获取仓库文件的功能
+function fget {
+    if [ $# -ne 2 ] || [ "$1" == "-h" ] || [ "$1" == "--help" ]; then 
+        printf "Usage:\n\t$0 /search/dir keyword\n"
+        printf "Examples:\n\t$0 /workspace/files/misc *id*\n"
+        return -1
+    fi
+    local search_dir=$1
+    find ${search_dir} -maxdepth 6 -iname $2 | fzf | xargs -I file sh -c 'cp -rp file ./'
 }
 
 ################################################################################################
@@ -68,5 +87,5 @@ function fmv()
 ################################################################################################
 export PATH=$HOME/.local/bin:$PATH
 
-ulimit -c unlimited
+ulimit -c unlimited # 常用于 gdb 调试，确保段错误等都能产生核心转储文件，并且不限制该文件的大小
 [[ -x "$(command -v xhost)" ]] && xhost +

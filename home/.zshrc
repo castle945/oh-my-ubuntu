@@ -1,22 +1,25 @@
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
+# copy from .oh-my-zsh/templates/zshrc.zsh-template
 
-# Path to your oh-my-zsh installation.
+# If you come from bash you might have to change your $PATH.
+# export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
+
+# Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
+# load a random theme each time Oh My Zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-# ZSH_THEME="robbyrussell"
-ZSH_THEME="sonicradish"
-# ZSH_THEME="philips"
+ZSH_THEME="robbyrussell"
+# ZSH_THEME="sonicradish"
+export ZSH_DISABLE_COMPFIX=true # 目录权限
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
 # a theme from this variable instead of looking in $ZSH/themes/
 # If set to an empty array, this variable will have no effect.
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" ) # 随机主题
+# 随机主题
+# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -26,7 +29,8 @@ ZSH_THEME="sonicradish"
 # HYPHEN_INSENSITIVE="true"
 
 # Uncomment one of the following lines to change the auto-update behavior
-zstyle ':omz:update' mode disabled  # disable automatic updates
+# zstyle ':omz:update' mode disabled  # disable automatic updates
+zstyle ':omz:update' mode disabled    # 禁用自动更新
 # zstyle ':omz:update' mode auto      # update automatically without asking
 # zstyle ':omz:update' mode reminder  # just remind me to update when it's time
 
@@ -54,7 +58,7 @@ zstyle ':omz:update' mode disabled  # disable automatic updates
 # Uncomment the following line if you want to disable marking untracked files
 # under VCS as dirty. This makes repository status check for large repositories
 # much, much faster.
-# # 可能用途，禁止的话大仓库不检查 git 的修改状态，所以 cd 等很快，但对于有文件修改的仓库也就没有*提示
+# 是否不检查 git 修改状态，当打开的仓库有大量未跟踪文件时会影响 cd 进去的速度
 # DISABLE_UNTRACKED_FILES_DIRTY="true"
 
 # Uncomment the following line if you want to change the command execution time
@@ -73,9 +77,9 @@ zstyle ':omz:update' mode disabled  # disable automatic updates
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git docker zsh-autosuggestions safe-paste z rsync)
-# docker: 命令补全；zsh-autosuggestions: 历史命令补全；safe-paste: 多行命令粘贴；z: 目录跳转；rsync-copy: 可视化压缩拷贝；
-# git clone https://ghproxy.com/https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/plugins/zsh-autosuggestions
+# 插件: docker 命令补全 + 历史命令补全 + 多行命令粘贴 + 类似 autojump 的目录跳转
+# git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/plugins/zsh-autosuggestions
+plugins=(git docker zsh-autosuggestions safe-paste z)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -91,15 +95,18 @@ export LANG=zh_CN.UTF-8
 # if [[ -n $SSH_CONNECTION ]]; then
 #   export EDITOR='vim'
 # else
-#   export EDITOR='mvim'
+#   export EDITOR='nvim'
 # fi
 
 # Compilation flags
-# export ARCHFLAGS="-arch x86_64"
+# export ARCHFLAGS="-arch $(uname -m)"
 
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
+# Set personal aliases, overriding those provided by Oh My Zsh libs,
+# plugins, and themes. Aliases can be placed here, though Oh My Zsh
+# users are encouraged to define aliases within a top-level file in
+# the $ZSH_CUSTOM folder, with .zsh extension. Examples:
+# - $ZSH_CUSTOM/aliases.zsh
+# - $ZSH_CUSTOM/macos.zsh
 # For a full list of active aliases, run `alias`.
 #
 # Example aliases
@@ -107,7 +114,5 @@ export LANG=zh_CN.UTF-8
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 setopt HIST_IGNORE_DUPS     # 连续输入相同的命令，只记录一条
-setopt no_nomatch           # 使 * 等通配符有效
+setopt no_nomatch           # 通配符 * 等匹配不到文件时不要报错停止执行，默认 nomatch 例如执行 cp xx/{.*,*} ~/ 如果 xx/ 下全是隐藏文件会报错不执行该命令
 [ -f $HOME/.local/shell/profile.sh ] && source $HOME/.local/shell/profile.sh # 通用终端配置
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-#------------------------ oh-my-shell config over ----------------------------------#

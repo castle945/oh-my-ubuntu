@@ -1,0 +1,31 @@
+#!/usr/bin/env python3
+# 
+# Python 工具插件
+import fire
+import os
+
+def num_files(root='.', recur=True, ignore_hide=True, ignore_link=True, excludes=[]):
+    """
+    计算传入目录下的文件个数
+    Args:
+        root: 传入目录，默认为当前工作目录
+        recur: 是否递归计算传入目录的子目录
+        ignore_hide: 计算时是否忽略隐藏文件
+        ignore_link: 计算时是否忽略软链接目录，软连接文件始终计算
+    Examples:
+        pyutils num_files --root home --ignore_hide False --excludes "['.oh-my-zsh', '.fzf']"
+    """
+    count = 0
+    for file in os.scandir(root):
+        if (ignore_hide and file.name.startswith('.')) or (file.name in excludes):
+            continue
+        
+        if file.is_file():
+            count += 1
+        elif recur and file.is_dir(follow_symlinks=not ignore_link):
+            count += num_files(file.path, recur, ignore_hide, ignore_link)
+    
+    return count
+
+if __name__ == "__main__":
+    fire.Fire()

@@ -4,9 +4,5 @@
             "path": "nvidia-container-runtime",
             "runtimeArgs": []
         }
-    },
-    "registry-mirrors": [
-        "https://hub-mirror.c.163.com",
-        "https://mirror.baidubce.com"
-    ]
+    }
 }

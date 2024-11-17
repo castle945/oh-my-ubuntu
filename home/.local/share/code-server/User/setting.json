@@ -1,10 +1,99 @@
 {
-///////////////////////////////////////////////////////////////////////////////
-//
-//  自定义设置
-//
-///////////////////////////////////////////////////////////////////////////////
-    // 语法分析排除目录 https://learnscript.net/zh/python/development-tools/vscode/pylance/
+    "editor.quickSuggestions": {"other": true, "comments": true, "strings": true},  // 控制哪里可以进行补全，默认仅在代码中补全，这里开启在注释和字符串中的补全
+    "editor.fontFamily": "monospace, 'Droid Sans Fallback'",                        // 设置字体，似乎是可以解决终端字母间带空格的问题
+    "editor.fontSize": 13,
+    "editor.mouseWheelZoom": false,                                                 // 是否可以通过鼠标滚轮缩放编辑器字体大小    
+    "editor.unicodeHighlight.allowedLocales": {"zh-hans": true},                    // 控制中文逗号不警告的
+    "editor.unicodeHighlight.ambiguousCharacters": false,
+    "editor.unicodeHighlight.invisibleCharacters": false,
+    "workbench.editor.enablePreview": true,
+    "extensions.autoUpdate": false,         // 禁止插件自动更新
+    "files.exclude": {                      // 设置排除文件和文件夹，使其不在目录树中显示
+        "**/.classpath": true,
+        "**/.project": true,
+        "**/.settings": true,
+        "**/.factorypath": true
+    },
+    "diffEditor.ignoreTrimWhitespace": false,       // 差异编辑器是否忽略空白字符的变化
+    "diffEditor.hideUnchangedRegions.enabled": true,// 差异编辑器是否隐藏未更改的区域
+
+    "explorer.confirmDelete": false,        // 是否在删除文件或文件夹时显示确认对话框
+    "explorer.confirmDragAndDrop": false,   // 是否在拖放文件或文件夹时显示确认对话框
+    "workbench.startupEditor": "newUntitledFile",
+    "workbench.colorTheme": "Default Dark Modern",
+    "workbench.tree.enableStickyScroll": true,  // 启用树视图的粘性滚动功能
+    "workbench.editor.empty.hint": "hidden",    // 空编辑器标签页的提示行为，"welcomePage"（显示欢迎页面）
+    "terminal.integrated.inheritEnv": true,     // 集成终端是否继承系统环境变量
+    "terminal.integrated.enableMultiLinePasteWarning": "never",
+    "window.restoreWindows": "preserve",        // VSCode 启动时恢复的窗口状态，preserve 恢复上次关闭时的窗口状态
+    "window.commandCenter": false,              // 是否启用顶部命令中心功能
+    "security.workspace.trust.enabled": false,  // 是否启用工作区信任功能
+    "search.followSymlinks": false,             // 全局搜索是否包含软连接目录下的文件
+    "git.autofetch": true,                      // 是否自动获取远程仓库的更新
+    "git.confirmSync": false,
+    "update.mode": "none",                      // vscode 不自动更新
+
+
+    // 一般不需要管理的部分，可能由界面操作修改（会删除掉行尾注释）
+    // 控制插件在远程开发环境中的运行方式，如 docker 插件在远程工作区中运行才能正常使用
+    "remote.extensionKind": {                                
+        "ms-azuretools.vscode-docker": "workspace",
+    },
+    // 指定特定文件类型的默认编辑器
+    "workbench.editorAssociations": {
+        "*.md": "vscode.markdown.preview.editor",
+        "*.ipynb": "jupyter-notebook"
+    },
+    // 控制 json 文件的处理，字符串中补全
+    "[json]": {
+        "editor.quickSuggestions": {
+            "strings": true
+        },
+        "editor.suggest.insertMode": "replace",
+        "gitlens.codeLens.scopes": [
+            "document"
+        ]
+    },
+    // 控制 python 文件的处理，输入时进行代码格式化
+    "[python]": {
+        "editor.formatOnType": true
+    },
+    // vscode 自带同步功能，设置不同步的插件，没办法设置只同步哪几个插件
+    "settingsSync.ignoredExtensions": [
+        "ms-azuretools.vscode-docker",
+        "ms-vscode-remote.remote-containers",
+        "leetcode.vscode-leetcode",
+        "wangtao0101.debug-leetcode",
+        "hediet.vscode-drawio",
+        "ms-ceintl.vscode-language-pack-zh-hans",
+        "ms-dotnettools.vscode-dotnet-runtime",
+        "christian-kohler.path-intellisense",
+        "ms-vscode-remote.remote-ssh",
+        "ms-vscode-remote.remote-ssh-edit",
+        "ms-vscode.cpptools",
+        "ms-vscode.cmake-tools"
+    ],
+    "editor.minimap.enabled": false,
+    "remote.autoForwardPortsSource": "hybrid",
+
+    "leetcode.defaultLanguage": "cpp",
+    "leetcode.endpoint": "leetcode-cn",
+    "leetcode.workspaceFolder": "/home/city945/work/common/leetcode",
+    "leetcode.hint.configWebviewMarkdown": false,
+    "leetcode.showDescription": "In File Comment",
+    "leetcode.hint.commentDescription": false,
+    "leetcode.hint.commandShortcut": false,
+
+    "jupyter.widgetScriptSources": [
+        "jsdelivr.com",
+        "unpkg.com"
+    ],
+
+    
+    // @! 自定义设置
+    "markdown-preview-github-styles.colorTheme": "light", // markdown-preview-github-styles 插件: 始终为白色主题
+    // 语法分析排除目录，防止 Pylance 插件失效 https://learnscript.net/zh/python/development-tools/vscode/pylance/
+    "python.languageServer": "Pylance",
     "python.analysis.exclude":[
         "data/", "output/", "work_dirs/", "build/", "devel/", "**/__pycache__",
     ],
