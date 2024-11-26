@@ -1,0 +1,16 @@
+services:
+  ubuntu-server:
+    image: city945/ubuntu-server:20.04
+    container_name: ubuntu-server
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /home/city945/workspace:/workspace                 #! 这里的路径看需要改一下，你可能用不着3个共享目录 source:target
+      - /datasets:/datasets
+    environment:
+      - DISPLAY=unix$DISPLAY
+      - NVIDIA_VISIBLE_DEVICES=all  # 显卡
+    ipc: host
+    network_mode: host  # 需要在容器内使用网卡时开启此选项
+    command: bash -c "/root/.env/startup.sh && tail -f /dev/null"
+    privileged: true    # 使用宿主机外设时开启 或 可以避免一些错误如ros镜像
+    runtime: nvidia

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   registry-ui:
     image: joxit/docker-registry-ui:main
@@ -33,5 +31,5 @@ services:
       REGISTRY_HTTP_HEADERS_Access-Control-Expose-Headers: '[Docker-Content-Digest]'
       REGISTRY_STORAGE_DELETE_ENABLED: 'true'
     volumes:
-      - /archive/docker/registry:/var/lib/registry
+      - /datasets/tmp/docker/registry:/var/lib/registry
     container_name: registry-server

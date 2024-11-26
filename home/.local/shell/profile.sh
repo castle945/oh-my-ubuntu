@@ -50,6 +50,7 @@ function gitcpcommits {
     fi
     local dest_dir=$1
     local num_commits=$2
+    local cur_work_dir=$(pwd)
 
     mkdir -p $dest_dir
     abs_dest_dir=$(realpath $dest_dir)
@@ -60,14 +61,15 @@ function gitcpcommits {
     for i in {$num_commits..1}; do
         git reset HEAD^
         cur_dest_dir=$abs_dest_dir/$(printf "commit%02d" $i)
-        gitcpstatus $cur_dest_dir
+        gitcpchanges $cur_dest_dir
         git reset --hard HEAD
         git clean -fd # 清除未跟踪文件
     done
     echorun rm -rf $tmp_dir
     # gather all commits
     mkdir -p $abs_dest_dir/final
-    echorun cp -rp $abs_dest_dir/commit*/{*,.*} $abs_dest_dir/final
+    echorun cp -rp $abs_dest_dir/commit*/{*,.*} $abs_dest_dir/final # only for zsh
+    cd $cur_work_dir
 }
 # 简单实现类似 apt-get 快速获取仓库文件的功能
 function fget {

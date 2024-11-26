@@ -18,6 +18,10 @@
         "command": "workbench.action.toggleMaximizedPanel"
     },
     {
+        "key": "alt+4",
+        "command": "gitlens.diffWithRevisionFrom"
+    },
+    {
         "key": "alt+z",
         "command": "editor.toggleFold",
         "when": "editorTextFocus && foldingEnabled"
