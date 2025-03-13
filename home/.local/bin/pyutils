@@ -26,6 +26,18 @@ def num_files(root='.', recur=True, ignore_hide=True, ignore_link=True, excludes
             count += num_files(file.path, recur, ignore_hide, ignore_link)
     
     return count
+def import_time(module_name):
+    """
+    计算导包的耗时
+    """
+    import importlib
+    import time
+
+    start_time = time.time()
+    module = importlib.import_module(module_name)
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    print(f"Importing {module_name} took {elapsed_time:.6f} seconds.")
 
 if __name__ == "__main__":
     fire.Fire()

@@ -25,3 +25,9 @@
 # tmux send -t novnc " \
 # /usr/share/novnc/utils/launch.sh --listen *:8081 --vnc localhost:5900
 # " C-m
+
+# pu4c
+# tmux new -s pu4c -d
+# tmux split-window -h -t pu4c:0
+# tmux send -t pu4c:0.0 "ssh amax4090 -R 30570:localhost:30570 -o ServerAliveInterval=120 -o ServerAliveCountMax=15" C-m
+# tmux send -t pu4c:0.1 "python -c 'import pu4c; pu4c.common.app.start_rpc_server()'" C-m

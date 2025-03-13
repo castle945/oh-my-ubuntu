@@ -39,6 +39,7 @@ function copy_config {
     echorun cd $(dirname $(readlink -f ${BASH_SOURCE[0]}))/home
     echorun cp -rp $(ls -A) $HOME
     cd
+    sed -i -E '/^#/d; /^```/d; s/[[:space:]]*#.*$//; /^$/d' .zsh_history.md # 删除 # 开题的标题，```开头的代码块符号，以及行尾注释
     cat .zsh_history.md >> .zsh_history && rm -f .zsh_history.md
     echorun chsh -s /bin/zsh    # 安装 ohmyzsh, 见其文档手动安装步骤
     echorun .fzf/install --all  # 安装 fzf, --all 避免交互

@@ -64,4 +64,8 @@
             ]
         },
     },
+    {
+        "key": "cmd+shift+/",
+        "command": "editor.action.blockComment"
+    },
 ]

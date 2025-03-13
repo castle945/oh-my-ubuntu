@@ -90,12 +90,10 @@
     ],
 
     
-    // @! 自定义设置
-    "markdown-preview-github-styles.colorTheme": "light", // markdown-preview-github-styles 插件: 始终为白色主题
     // 语法分析排除目录，防止 Pylance 插件失效 https://learnscript.net/zh/python/development-tools/vscode/pylance/
     "python.languageServer": "Pylance",
     "python.analysis.exclude":[
-        "data/", "output/", "work_dirs/", "build/", "devel/", "**/__pycache__",
+        "**/data/**", "**/output/**", "**/work_dirs/**", "**/build/**", "**/devel/**", "**/__pycache__/**", "**/install/**",
     ],
     "better-comments.highlightPlainText": true,
     "better-comments.tags": [
@@ -162,33 +160,23 @@
         //     "bold": true,
         //     "italic": false
         // },
-        // {
-        //     "tag": "@$",                         // @$ 代码片段
-        //     "color": "#d9b611",
-        //     "strikethrough": false,
-        //     "underline": false,
-        //     "backgroundColor": "transparent",
-        //     "bold": true,
-        //     "italic": false
-        // },
-        // {
-        //     "tag": "@todo",                      // @todo
-        //     "color": "#e3f9fd",
-        //     "strikethrough": false,
-        //     "underline": false,
-        //     "backgroundColor": "transparent",
-        //     "bold": true,
-        //     "italic": false
-        // },
-
-        // {
-        //     "tag": "@/",                         // @/ 不太重要 例如某段代码认为看似可删除
-        //     "color": "#474747",
-        //     "strikethrough": false,
-        //     "underline": false,
-        //     "backgroundColor": "transparent",
-        //     "bold": true,
-        //     "italic": false
-        // },
+        {
+            "tag": "@todo",                      // @todo
+            "color": "#e3f9fd",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": true,
+            "italic": false
+        },
+        {
+            "tag": "@/",                         // @/ 不太重要 例如某段代码认为看似可删除
+            "color": "#474747",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": true,
+            "italic": false
+        },
     ],
 }

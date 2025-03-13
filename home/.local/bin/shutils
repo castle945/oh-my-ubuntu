@@ -2,6 +2,31 @@
 # 
 # shell 工具插件
 
+# 根据当前时间戳(精确到分钟)生成一个唯一字符串，纯数字的分钟时间戳 YYYYMMDDHHMM 需要 12 位数字，大小写数字混合每位 62 种可能，转 62 进制的话需要 7 个字符 62**7 > 10**11 。虽然另一种方式只需要 6 位字符，但代码上稍显冗余，不采纳，即由于除年份外其他都不超过 60 种可能，转 62 进制共需要 2+1+1+1+1=6 位(62**2 > 10**3)
+function uniqstr {
+    # 命令行参数校验
+    if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+        printf "Usage:\n\t${FUNCNAME[0]} [YYYYMMDDHHMM]\n"
+        printf "Examples:\n\t${FUNCNAME[0]} \n\t${FUNCNAME[0]} 202411271234 \n"
+        exit 1
+    fi
+    if [ $# -eq 1 ]; then
+        cur_date=$1
+    else
+        cur_date=$(date +%Y%m%d%H%M)
+    fi
+    # 将十进制时间戳数转换为 62 进制字符串
+    base62_chars="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+    local num=$cur_date
+    local base62_str=""
+    while [ $num -gt 0 ]; do
+        local index=$((num % 62))
+        base62_str="${base62_chars:$index:1}$base62_str"
+        num=$((num / 62))
+    done
+    echo "$base62_str"
+}
+
 # 类似 Python 中 fire.Fire() 的用法，可将函数名作为命令行参数，仅支持 bash, zsh 中关联数组的用法有所不同
 function fire {
     # 命令行参数校验
@@ -13,7 +38,7 @@ function fire {
     fi
     
     local func_name="$1"    # 获取函数名
-    shift                   # 移除第一个参数，剩下的是传递给函数的参数
+    shift                   # 移除第一个参数 $1，剩下的是传递给函数的参数
     # 检查是否有对应的函数实现
     if [[ -z "${func_dict[$func_name]}" ]]; then
         echo "Unknown func_name: $func_name"
@@ -26,5 +51,7 @@ function fire {
     "${func_dict[$func_name]}" "$@"
 }
 # 函数映射字典，将函数名映射到函数本身
-declare -A func_dict=() # (['func1']='func1' ['func2']='func2')
+declare -A func_dict=(
+    ['uniqstr']='uniqstr'
+) # (['func1']='func1' ['func2']='func2')
 fire $*
