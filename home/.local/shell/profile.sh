@@ -81,6 +81,21 @@ function fget {
     local search_dir=$1
     find ${search_dir} -maxdepth 6 -iname $2 | fzf | xargs -I file sh -c 'cp -rp file ./'
 }
+# docker 简化从镜像源拉取和推送
+function dockermirrorpull {
+    local image=$1
+    local prefix="docker-0.unsee.tech/"
+    docker pull $prefix$image
+    docker tag $prefix$image $image
+    docker rmi $prefix$image
+}
+function dockermirrorpush {
+    local image=$1
+    local prefix="njust.docker.com/"
+    docker tag $image $prefix$image
+    docker push $prefix$image
+    docker rmi $prefix$image
+}
 
 ################################################################################################
 #	

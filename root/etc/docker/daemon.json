@@ -4,5 +4,8 @@
             "path": "nvidia-container-runtime",
             "runtimeArgs": []
         }
-    }
+    },
+    "insecure-registries": [
+        "njust.docker.com", "192.10.84.160:7111"
+    ]
 }

@@ -6,16 +6,17 @@
     },
     {
         "key": "alt+1",
-        "command": "workbench.action.findInFiles"
+        "command": "workbench.action.toggleMaximizeEditorGroup",
+        "when": "editorPartMaximizedEditorGroup || editorPartMultipleEditorGroups"
     },
     {
         "key": "alt+2",
-        "command": "git.stageSelectedRanges",
-        "when": "isInDiffEditor && !operationInProgress"
+        "command": "workbench.action.toggleMaximizedPanel"
     },
     {
         "key": "alt+3",
-        "command": "workbench.action.toggleMaximizedPanel"
+        "command": "git.stageSelectedRanges",
+        "when": "!operationInProgress"
     },
     {
         "key": "alt+4",
@@ -68,4 +69,25 @@
         "key": "cmd+shift+/",
         "command": "editor.action.blockComment"
     },
+    {
+        "key": "cmd+1",
+        "command": "numberedBookmarks.jumpToBookmark1"
+    },
+    {
+        "key": "cmd+2",
+        "command": "numberedBookmarks.jumpToBookmark2"
+    },
+    {
+        "key": "cmd+3",
+        "command": "numberedBookmarks.jumpToBookmark3"
+    },
+    {
+        "key": "cmd+4",
+        "command": "numberedBookmarks.jumpToBookmark4"
+    },
+    {
+        "key": "cmd+5",
+        "command": "numberedBookmarks.jumpToBookmark5"
+    },
+
 ]
