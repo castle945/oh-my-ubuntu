@@ -1,0 +1,91 @@
+#!/bin/bash
+#
+# 用于过滤不允许的命令参数并且以 sudo 免密执行
+# Configs:
+#     /etc/sudoers: 新增一行代码如 city945 ALL=(ALL) NOPASSWD: /usr/local/bin/sudowrapper
+#     sudo chattr -R +i /etc/sudoers /usr/bin /usr/local/bin
+#     .bashrc 设置别名以简化使用: alias sudo='/usr/bin/sudo /usr/local/bin/sudowrapper' 和 alias docker='sudo docker'
+
+NC='\033[0m'        # 颜色代码，默认白色
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+function info {
+    echo -e "${GREEN}$1${NC}"
+}
+function error {
+    echo -e "${RED}Error: $1${NC}" >&2 # 将错误信息输出到标准错误
+    exit 1
+}
+info "Here is sudowrapper: Runs commands without password prompt and filters unauthorized parameters."
+
+# 如果没有命令传入，直接返回
+if [ $# -eq 0 ]; then
+    exit 1
+fi
+
+# 获取命令名称和剩余的命令参数
+cmd="$1"
+shift    # 将第一个参数移除，剩下的参数存储在 $@
+
+# 阻止网页内容，用法例如 sudo blockwebsite "baidu.com" 并可用 sudo iptables -L 查看
+function blockwebsite {
+    # /usr/bin/sudo apt install iptables-persistent
+    /usr/bin/sudo ip6tables -A OUTPUT -m string --string "$1" --algo bm --to 65535 -j DROP
+    /usr/bin/sudo iptables  -A OUTPUT -m string --string "$1" --algo bm --to 65535 -j DROP
+    /usr/bin/sudo netfilter-persistent save
+    /usr/bin/sudo iptables -L
+}
+if [[ "$cmd" == "blockwebsite" ]]; then
+    blockwebsite $@
+    exit
+fi
+
+# 检查命令，只能执行 /usr/bin 或 /usr/local/bin 中允许的二进制文件
+fullcmd="$(/usr/bin/which $cmd)"
+if [[ "$fullcmd" != /usr/bin/* ]] && [[ "$fullcmd" != /usr/local/bin/* ]] && [[ "$fullcmd" != /usr/sbin/* ]]; then
+    error "$cmd must in /usr/bin or /usr/local/bin or /usr/sbin/."
+fi
+if [[ "$fullcmd" == *visudo* ]] || [[ "$fullcmd" == *chattr* ]] || [[ "$fullcmd" == *passwd* ]] || [[ "$fullcmd" == *snap* ]] || [[ "$fullcmd" == *ip*tables* ]] || [[ "$fullcmd" == /usr/bin/*sh ]]; then
+    error "$cmd is not allowed."
+fi
+
+# 处理 docker 命令
+function check_compose_file {
+    filepath="$1"
+    if [ -f "$filepath" ]; then
+        if grep -q '/etc' $filepath || grep -q '/usr' $filepath; then
+            error "Mounting files under /etc and /usr is prohibited."
+        fi
+    fi
+}
+if [ "$cmd" = "docker" ]; then
+    # 遍历所有参数，检查是否包含 /etc 等目标路径，禁止挂载这些路径
+    for arg in "$@"; do
+        if [[ "$arg" == */etc* ]] || [[ "$arg" == */usr* ]]; then
+            error "Mounting files under /etc and /usr is prohibited."
+        fi
+        # 如果是 docker compose 命令，检查配置文件
+        if [[ "$arg" == "compose" ]]; then
+            check_compose_file "docker-compose.yml"
+            check_compose_file "docker-compose.yaml"
+            for subarg in "$@"; do
+                check_compose_file $subarg
+            done
+        fi
+    done
+fi
+
+# 处理 apt 命令
+if [ "$cmd" = "apt" ] || [ "$cmd" = "apt-get" ] || [ "$cmd" = "dpkg" ]; then
+    # 遍历所有参数，检查是否要安装浏览器或者从文件安装
+    for arg in "$@"; do
+        if [[ "$arg" == *chromium* ]] || [[ "$arg" == *firefox* ]]; then
+            error "Installing browsers is not allowed."
+        elif [[ -f "$arg" ]]; then
+	    # 不能以判断是否包含 .deb 的方式，因为 linux 不是根据后缀名判断文件内容，重命名文件仍然可以安装
+            error "Installing software from .deb files is not allowed."
+	fi
+    done
+fi
+
+/usr/bin/sudo $cmd "$@"

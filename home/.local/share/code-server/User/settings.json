@@ -6,6 +6,7 @@
     "editor.unicodeHighlight.allowedLocales": {"zh-hans": true},                    // 控制中文逗号不警告的
     "editor.unicodeHighlight.ambiguousCharacters": false,
     "editor.unicodeHighlight.invisibleCharacters": false,
+    "workbench.activityBar.orientation": "vertical",
     "workbench.editor.enablePreview": true,
     "extensions.autoUpdate": false,         // 禁止插件自动更新
     "files.exclude": {                      // 设置排除文件和文件夹，使其不在目录树中显示
@@ -19,7 +20,6 @@
 
     "explorer.confirmDelete": false,        // 是否在删除文件或文件夹时显示确认对话框
     "explorer.confirmDragAndDrop": false,   // 是否在拖放文件或文件夹时显示确认对话框
-    "workbench.startupEditor": "newUntitledFile",
     "workbench.colorTheme": "Default Dark Modern",
     "workbench.tree.enableStickyScroll": true,  // 启用树视图的粘性滚动功能
     "workbench.editor.empty.hint": "hidden",    // 空编辑器标签页的提示行为，"welcomePage"（显示欢迎页面）
@@ -41,8 +41,8 @@
     },
     // 指定特定文件类型的默认编辑器
     "workbench.editorAssociations": {
-        "*.md": "vscode.markdown.preview.editor",
-        "*.ipynb": "jupyter-notebook"
+        "*.ipynb": "jupyter-notebook",
+        "{git,gitlens}:/**/*.{md}": "default"
     },
     // 控制 json 文件的处理，字符串中补全
     "[json]": {
@@ -58,21 +58,10 @@
     "[python]": {
         "editor.formatOnType": true
     },
-    // vscode 自带同步功能，设置不同步的插件，没办法设置只同步哪几个插件
-    "settingsSync.ignoredExtensions": [
-        "ms-azuretools.vscode-docker",
-        "ms-vscode-remote.remote-containers",
-        "leetcode.vscode-leetcode",
-        "wangtao0101.debug-leetcode",
-        "hediet.vscode-drawio",
-        "ms-ceintl.vscode-language-pack-zh-hans",
-        "ms-dotnettools.vscode-dotnet-runtime",
-        "christian-kohler.path-intellisense",
-        "ms-vscode-remote.remote-ssh",
-        "ms-vscode-remote.remote-ssh-edit",
-        "ms-vscode.cpptools",
-        "ms-vscode.cmake-tools"
-    ],
+    // 控制 markdown 文件的处理，不自动换行
+    "[markdown]": {
+        "editor.wordWrap": "off"
+    },
     "editor.minimap.enabled": false,
     "remote.autoForwardPortsSource": "hybrid",
 
